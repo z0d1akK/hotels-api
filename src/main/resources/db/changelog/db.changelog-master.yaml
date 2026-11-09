@@ -1,0 +1,16 @@
+databaseChangeLog:
+
+  - include:
+      file: db/changelog/changes/001-create-hotels.yaml
+
+  - include:
+      file: db/changelog/changes/002-create-amenities.yaml
+
+  - include:
+      file: db/changelog/changes/003-create-hotels-amenities.yaml
+
+  - include:
+      file: db/changelog/changes/004-indexes-hotels-search.yaml
+
+  - include:
+      file: db/changelog/changes/005-indexes-amenities.yaml

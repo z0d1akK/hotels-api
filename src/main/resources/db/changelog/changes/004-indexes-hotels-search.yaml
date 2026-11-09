@@ -1,0 +1,31 @@
+databaseChangeLog:
+  - changeSet:
+      id: 004-indexes-hotels-search
+      author: zodiakk
+
+      changes:
+
+        - createIndex:
+            tableName: hotels
+            indexName: idx_hotels_brand
+            columns:
+              - column:
+                  name: brand
+        - createIndex:
+            tableName: hotels
+            indexName: idx_hotels_city
+            columns:
+              - column:
+                  name: city
+        - createIndex:
+            tableName: hotels
+            indexName: idx_hotels_country
+            columns:
+              - column:
+                  name: country
+        - createIndex:
+            tableName: hotels
+            indexName: idx_hotels_name
+            columns:
+              - column:
+                  name: name
