@@ -22,9 +22,9 @@
     </developers>
     <scm>
         <connection>scm:git:https://github.com/z0d1akK/hotels-api.git</connection>
-        <developerConnection>scm:git:ssh://git@github.com:z0d1akK/Karyera_timetrack-service.git</developerConnection>
+        <developerConnection>scm:git:ssh://git@github.com:z0d1akK/hotels-api.git</developerConnection>
         <tag>HEAD</tag>
-        <url>https://github.com/z0d1akK/Karyera_timetrack-service</url>
+        <url>https://github.com/z0d1akK/hotels-api</url>
     </scm>
     <properties>
         <java.version>21</java.version>
@@ -58,6 +58,11 @@
             <version>${springdoc.version}</version>
         </dependency>
 
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
