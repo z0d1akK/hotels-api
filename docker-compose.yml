@@ -1,0 +1,65 @@
+services:
+
+  hotels-api:
+    image: hotels-api:1.0
+    build:
+      context: .
+      dockerfile: Dockerfile
+
+    container_name: hotels-api
+    restart: unless-stopped
+
+    ports:
+      - "${SERVER_PORT}:${SERVER_PORT}"
+
+    environment:
+      SPRING_PROFILES_ACTIVE: postgres
+      ACTIVE_PROFILE: postgres
+      SERVER_PORT: ${SERVER_PORT}
+
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: ${POSTGRES_PORT}
+      POSTGRES_DB_NAME: ${POSTGRES_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+    networks:
+      - hotels-api-network
+
+  postgres:
+    image: postgres:17
+    container_name: hotels-api-postgres
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB_NAME}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+
+    ports:
+      - "${POSTGRES_HOST_PORT}:${POSTGRES_PORT}"
+
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -p 5432" ]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+
+    networks:
+      - hotels-api-network
+
+volumes:
+  postgres-data:
+
+networks:
+  hotels-api-network:
+    driver: bridge
+    name: hotels-api-network
