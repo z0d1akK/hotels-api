@@ -10,6 +10,7 @@ on:
 
 env:
   JAVA_VERSION: 21
+  SERVER_PORT: 8092
   IMAGE_NAME: ghcr.io/${{ github.repository }}
 
 jobs:
