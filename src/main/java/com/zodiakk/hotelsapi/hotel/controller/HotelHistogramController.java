@@ -10,6 +10,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +31,7 @@ public class HotelHistogramController {
     @ApiResponse(responseCode = "200", description = "Histogram map")
     @ApiResponse(responseCode = "400", description = "Unknown parameter",
             content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
-    public Map<String, Long> histogram(@PathVariable("param") String param) {
-        return hotelHistogramService.histogram(HistogramParam.from(param));
+    public ResponseEntity<Map<String, Long>> histogram(@PathVariable("param") String param) {
+        return ResponseEntity.ok(hotelHistogramService.histogram(HistogramParam.from(param)));
     }
 }

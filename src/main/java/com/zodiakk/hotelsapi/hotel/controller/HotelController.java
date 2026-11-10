@@ -21,6 +21,7 @@ import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -29,7 +30,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -47,8 +47,8 @@ public class HotelController {
     @Operation(summary = "List all hotels with short information")
     @ApiResponse(responseCode = "200", description = "Hotels list",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = HotelShortResponseDto.class))))
-    public List<HotelShortResponseDto> getAllHotels() {
-        return hotelService.findAllShort();
+    public ResponseEntity<List<HotelShortResponseDto>> getAllHotels() {
+        return ResponseEntity.ok(hotelService.findAllShort());
     }
 
     @GetMapping(ApiPaths.HOTEL_BY_ID)
@@ -57,19 +57,20 @@ public class HotelController {
             content = @Content(schema = @Schema(implementation = HotelDetailResponseDto.class)))
     @ApiResponse(responseCode = "404", description = "Hotel not found",
             content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
-    public HotelDetailResponseDto getHotelById(@PathVariable @Positive(message = ValidationMessages.HOTEL_ID_POSITIVE) Long id) {
-        return hotelService.findByIdDetail(id);
+    public ResponseEntity<HotelDetailResponseDto> getHotelById(
+            @PathVariable @Positive(message = ValidationMessages.HOTEL_ID_POSITIVE) Long id
+    ) {
+        return ResponseEntity.ok(hotelService.findByIdDetail(id));
     }
 
     @PostMapping(ApiPaths.HOTELS)
-    @ResponseStatus(HttpStatus.CREATED)
     @Operation(summary = "Create a new hotel")
     @ApiResponse(responseCode = "201", description = "Hotel created",
             content = @Content(schema = @Schema(implementation = HotelShortResponseDto.class)))
     @ApiResponse(responseCode = "400", description = "Validation error",
             content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
-    public HotelShortResponseDto createHotel(@Valid @RequestBody HotelCreateDto dto) {
-        return hotelService.create(dto);
+    public ResponseEntity<HotelShortResponseDto> createHotel(@Valid @RequestBody HotelCreateDto dto) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(hotelService.create(dto));
     }
 
     @PutMapping(ApiPaths.HOTEL_BY_ID)
@@ -82,19 +83,23 @@ public class HotelController {
             content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     @ApiResponse(responseCode = "409", description = "Optimistic lock conflict",
             content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
-    public HotelDetailResponseDto updateHotel(@PathVariable @Positive(message = ValidationMessages.HOTEL_ID_POSITIVE) Long id,
-                                              @Valid @RequestBody HotelUpdateDto dto) {
-        return hotelService.update(id, dto);
+    public ResponseEntity<HotelDetailResponseDto> updateHotel(
+            @PathVariable @Positive(message = ValidationMessages.HOTEL_ID_POSITIVE) Long id,
+            @Valid @RequestBody HotelUpdateDto dto
+    ) {
+        return ResponseEntity.ok(hotelService.update(id, dto));
     }
 
     @DeleteMapping(ApiPaths.HOTEL_BY_ID)
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @Operation(summary = "Delete hotel by id")
     @ApiResponse(responseCode = "204", description = "Hotel deleted")
     @ApiResponse(responseCode = "404", description = "Hotel not found",
             content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
-    public void deleteHotel(@PathVariable @Positive(message = ValidationMessages.HOTEL_ID_POSITIVE) Long id) {
+    public ResponseEntity<Void> deleteHotel(
+            @PathVariable @Positive(message = ValidationMessages.HOTEL_ID_POSITIVE) Long id
+    ) {
         hotelService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping(value = ApiPaths.HOTEL_AMENITIES, consumes = MediaType.APPLICATION_JSON_VALUE)
@@ -107,10 +112,11 @@ public class HotelController {
             content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
     @ApiResponse(responseCode = "409", description = "Conflict",
             content = @Content(schema = @Schema(implementation = ErrorResponseDto.class)))
-    public HotelDetailResponseDto replaceAmenities(@PathVariable @Positive(message = ValidationMessages.HOTEL_ID_POSITIVE) Long id,
-                                                   @RequestBody @NotNull(message = ValidationMessages.AMENITIES_LIST_REQUIRED)
-                                                   List<@NotBlank(message = ValidationMessages.AMENITY_NAME_REQUIRED) String> amenities
+    public ResponseEntity<HotelDetailResponseDto> replaceAmenities(
+            @PathVariable @Positive(message = ValidationMessages.HOTEL_ID_POSITIVE) Long id,
+            @RequestBody @NotNull(message = ValidationMessages.AMENITIES_LIST_REQUIRED)
+            List<@NotBlank(message = ValidationMessages.AMENITY_NAME_REQUIRED) String> amenities
     ) {
-        return hotelService.replaceAmenities(id, amenities);
+        return ResponseEntity.ok(hotelService.replaceAmenities(id, amenities));
     }
 }

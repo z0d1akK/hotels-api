@@ -11,6 +11,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -30,7 +31,7 @@ public class HotelSearchController {
     @Operation(summary = "Search hotels by name, brand, city, country and amenities")
     @ApiResponse(responseCode = "200", description = "Filtered hotels",
             content = @Content(array = @ArraySchema(schema = @Schema(implementation = HotelShortResponseDto.class))))
-    public List<HotelShortResponseDto> search(@ModelAttribute HotelSearchFilterDto filter) {
-        return hotelService.search(filter);
+    public ResponseEntity<List<HotelShortResponseDto>> search(@ModelAttribute HotelSearchFilterDto filter) {
+        return ResponseEntity.ok(hotelService.search(filter));
     }
 }
